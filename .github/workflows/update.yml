@@ -1,0 +1,60 @@
+name: update
+
+# Each formula follows its project's latest GitHub release. The tap pulls
+# rather than being pushed to, so no project needs a credential for this
+# repository: the job commits with its own GITHUB_TOKEN. The formula text comes
+# from the project's own generator, fed that release's SHA256SUMS.
+#
+# Releases reach Homebrew within half an hour; dispatch this to skip the wait.
+on:
+  schedule:
+    - cron: '*/30 * * * *'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency: update
+
+jobs:
+  deconflict:
+    runs-on: ubuntu-latest
+    outputs:
+      version: ${{ steps.update.outputs.version }}
+    steps:
+      - uses: actions/checkout@v4
+      - id: update
+        env:
+          GH_TOKEN: ${{ github.token }}
+          SRC: cloudcons/deconflict-cli
+        run: |
+          set -euo pipefail
+          tag=$(gh release view -R "$SRC" --json tagName --jq .tagName)
+          current=$(sed -n 's/^  version "\(.*\)"$/\1/p' Formula/deconflict.rb)
+          if [ "${tag#v}" = "$current" ]; then
+            echo "deconflict already at $current"
+            exit 0
+          fi
+          gh release download "$tag" -R "$SRC" -p SHA256SUMS -D "$RUNNER_TEMP"
+          gh api "repos/$SRC/contents/packaging/homebrew.sh" -H 'Accept: application/vnd.github.raw' > "$RUNNER_TEMP/homebrew.sh"
+          sh "$RUNNER_TEMP/homebrew.sh" "${tag#v}" "$RUNNER_TEMP/SHA256SUMS" > Formula/deconflict.rb
+          git add Formula/deconflict.rb
+          git -c user.name='github-actions[bot]' \
+              -c user.email='41898282+github-actions[bot]@users.noreply.github.com' \
+              commit -q -m "deconflict ${tag#v}"
+          git push -q origin HEAD
+          echo "version=${tag#v}" >> "$GITHUB_OUTPUT"
+
+  # Install the new formula the way a user would, on a clean runner.
+  verify-deconflict:
+    needs: deconflict
+    if: needs.deconflict.outputs.version != ''
+    runs-on: macos-latest
+    steps:
+      - env:
+          VERSION: ${{ needs.deconflict.outputs.version }}
+        run: |
+          set -euo pipefail
+          brew install cloudcons/tap/deconflict
+          brew test cloudcons/tap/deconflict
+          deconflict version | tee /dev/stderr | grep -qx "deconflict $VERSION"
