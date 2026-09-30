@@ -3,28 +3,28 @@
 class Deconflict < Formula
   desc "Advisory intention claims and negotiated agreements for coding agents"
   homepage "https://github.com/cloudcons/deconflict-cli"
-  version "0.1.18"
+  version "0.1.19"
   license "Apache-2.0"
 
   on_macos do
     on_arm do
-      url "https://github.com/cloudcons/deconflict-cli/releases/download/v0.1.18/deconflict_0.1.18_darwin_arm64.tar.gz"
-      sha256 "3c9557b8d15c0475219a6985fce7c8907ea2b0174607d3bdd111d719d5674d4d"
+      url "https://github.com/cloudcons/deconflict-cli/releases/download/v0.1.19/deconflict_0.1.19_darwin_arm64.tar.gz"
+      sha256 "b7670bb9bff79ad217eba39378fdb8546596ad425ce04ead025ff9af07cc876b"
     end
     on_intel do
-      url "https://github.com/cloudcons/deconflict-cli/releases/download/v0.1.18/deconflict_0.1.18_darwin_amd64.tar.gz"
-      sha256 "4ef9c317780e157ebee12d056c5a1ce4bc31dab11ad26f660f6e5bdfff09fc52"
+      url "https://github.com/cloudcons/deconflict-cli/releases/download/v0.1.19/deconflict_0.1.19_darwin_amd64.tar.gz"
+      sha256 "9615c5c74f0b69b5827552935a2dfb8359616116dbc14544bedeb70229347031"
     end
   end
 
   on_linux do
     on_arm do
-      url "https://github.com/cloudcons/deconflict-cli/releases/download/v0.1.18/deconflict_0.1.18_linux_arm64.tar.gz"
-      sha256 "842243b4bda787b2ebc60570fc4713f7f69d87498b1d3ea393b2be3218f899ad"
+      url "https://github.com/cloudcons/deconflict-cli/releases/download/v0.1.19/deconflict_0.1.19_linux_arm64.tar.gz"
+      sha256 "911605d94e9491628ab7e9c028911f9ac48d166b7c3376418d68e69c3d30c716"
     end
     on_intel do
-      url "https://github.com/cloudcons/deconflict-cli/releases/download/v0.1.18/deconflict_0.1.18_linux_amd64.tar.gz"
-      sha256 "30ba76ffb014597907ca06af20525d88193be6ae73c7cae8962dba20ced345a0"
+      url "https://github.com/cloudcons/deconflict-cli/releases/download/v0.1.19/deconflict_0.1.19_linux_amd64.tar.gz"
+      sha256 "99a9bd1deff03cf402017ec32af9a38858ce5ddf95c8418d84b529b57712f028"
     end
   end
 
